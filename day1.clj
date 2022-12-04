@@ -6,13 +6,17 @@
 (defn total [lst]
   (reduce + (map #(Integer/parseInt %) lst)))
 
-(defn part1 [file]
+(defn solve [file]
   (with-open [rdr (io/reader file)]
-    (apply max
-           (map total
-                (remove #{'("")}
-                        (partition-by #{""} (line-seq rdr)))))))
+    (doall
+     (map total
+          (remove #{'("")}
+                  (partition-by #{""} (line-seq rdr)))))))
 
 (comment
-  (part1 input-data) 
+  ;; Part 1
+  (apply max (solve input-data))
+
+  ;; Part 2
+  (apply + (take 3 (sort-by - (solve input-data))))
   :rcf)
