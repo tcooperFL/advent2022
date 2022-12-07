@@ -25,7 +25,7 @@ def score(opponent_move, my_move):
         outcome = 0
     return outcome + my_move
 
-def run(strategy):
+def solve(strategy):
     """
     Run through the input move instructions and sum scores
     using the given strategy
@@ -37,15 +37,6 @@ def run(strategy):
             total = total + score(*moves)
     return total
 
-# Part 1
-
-def part1():
-    result = run(lambda c1, c2: (value_map[c1], value_map[c2]))
-    print(f"Part 1 total is {result}")
-    
-part1()
-
-# Part 2
 
 # Create a map to find my move value given opponent move and advice
 # X means lose, Y means draw, Z means win
@@ -55,8 +46,7 @@ my_moves = {
     'C': {'X': 2, 'Y': 3, 'Z': 1},
 }
 
-def part2():
-    result = run(lambda c1, c2: (value_map[c1], my_moves[c1][c2]))
-    print(f"Part 2 total is {result}")
 
-part2()
+if __name__ == "__main__":
+    print(f"Part 1: {solve(lambda c1, c2: (value_map[c1], value_map[c2]))}")
+    print(f"Part 2: {solve(lambda c1, c2: (value_map[c1], my_moves[c1][c2]))}")

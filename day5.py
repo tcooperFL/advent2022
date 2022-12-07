@@ -33,12 +33,7 @@ def solve(xf):
 
     return get_message(stacks)
 
-def part1():
-    print(f"Part 1: {solve(lambda x: list(reversed(x)))}")
-
-def part2():
-    print(f"Part 2: {solve(lambda x: x)}")
 
 if __name__ == "__main__":
-    part1()
-    part2()
+    print(f"Part 1: {solve(lambda x: list(reversed(x)))}")
+    print(f"Part 2: {solve(lambda x: x)}")

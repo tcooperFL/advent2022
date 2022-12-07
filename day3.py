@@ -11,7 +11,7 @@ def priority(c):
         return 1 + ord(c) - ord('a')
     return 27 + ord(c) - ord('A')
 
-def run(collector):
+def solve(collector):
     total = 0
     with open('data/day3.txt', 'r') as f:
         while True:
@@ -21,8 +21,6 @@ def run(collector):
             else:
                 break
     return total
-
-## Part 1
 
 def halfs(s):
     s = s.strip()
@@ -35,20 +33,13 @@ def split_compartments(f):
     else:
         return None
 
-def part1():
-    print(f"Total for part 1 is {run(split_compartments)}")
-
-part1()
-
-## Part 2
-
 def collect_group(f):
     if first := f.readline():
         return (first, f.readline(), f.readline())
     else:
         return None
 
-def part2():
-    print(f"Total for part 2 is {run(collect_group)}")
 
-part2()
+if __name__ == "__main__":
+    print(f"Part 1: {solve(split_compartments)}")
+    print(f"Part 2: {solve(collect_group)}")

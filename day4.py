@@ -24,21 +24,15 @@ class Assignment:
     def __str__(self):
         return f"Assignment({self.lower} - {self.upper})"
 
-def analyze(method):
+def solve(method):
     count = 0
     with open('data/day4.txt', 'r') as f:
         while line := f.readline():
             a1, a2 = map(Assignment, line.split(','))
             if method(a1, a2):
-                # print(f"{a1} and {a2} meet criteria")
                 count = count + 1
     return count
 
-def part1():
-    print(f"Part 1: {analyze(Assignment.has_containment)}")
-
-def part2():
-    print(f"Part 2: {analyze(Assignment.has_overlap)}")
-
-part1()
-part2()
+if __name__ == "__main__":
+    print(f"Part 1: {solve(Assignment.has_containment)}")
+    print(f"Part 2: {solve(Assignment.has_overlap)}")
