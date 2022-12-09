@@ -10,20 +10,14 @@ def build_grid():
         return np.array([list(map(int, list(line.rstrip())))
             for line in f.readlines()], dtype=int)
 
-def east(n):
+def east_west(n):
     for r in range(1, n-1):
         yield [[r, c] for c in range(0, n-1)]
-
-def west(n):
-    for r in range(1, n-1):
         yield [[r, c] for c in range(n-1, 0, -1)]
 
-def north(n):
+def north_south(n):
     for c in range(1, n-1):
         yield [[r, c] for r in range(0, n-1)]
-
-def south(n):
-    for c in range(1, n-1):
         yield [[r, c] for r in range(n-1, 0, -1)] 
 
 def solve():
@@ -31,7 +25,7 @@ def solve():
     n, _ = grid.shape
     seen = np.zeros((n, n), dtype=int)
 
-    for direction in [east(n), west(n), north(n), south(n)]:
+    for direction in [east_west(n), north_south(n)]:
         for paths in direction:
             peak = -1
             for r, c in paths:
