@@ -9,7 +9,6 @@ class Knot:
 
     def move(self, dx, dy):
         if (dx, dy) != (0, 0):
-            save = str(self)
             self.x += dx
             self.y += dy
             # print(f"Move {save} dx={dx}, dy={dy} to {self}")
