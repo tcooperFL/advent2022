@@ -39,23 +39,28 @@ def load_program():
         return list(map(lambda x: x.split(), f.readlines()))
 
 def part1():
+    cpu = Cpu()
+    program = load_program()
+
+    # Set up the sampler
     samples = []
     def sample(cpu):
         if cpu.cycle in {20, 60, 100, 140, 180, 220}:
             signal = cpu.cycle * cpu.x
-            print(f"During {cpu.cycle}th cycle, x = {signal}")
+            # print(f"During {cpu.cycle}th cycle, x = {signal}")
             samples.append(signal)
 
-    cpu = Cpu()
-    program = load_program()
-    
     # Run with the sampler
     cpu.run(program, debug=sample)
     
-    print(f"Sum of samples = {sum(samples)}")
+    print(f"\nPart1: Sum of samples = {sum(samples)}")
 
 
 def part2():
+    cpu = Cpu()
+    program = load_program()
+    
+    # Set up the pixel painter
     pixels = list(repeat('.', 240))
 
     def paint_pixel(cpu):
@@ -63,13 +68,11 @@ def part2():
         if abs((cpu.x + 1) - position) < 2:
             pixels[cpu.cycle] = '#'
 
-    cpu = Cpu()
-    program = load_program()
-    
-    # Run with the sampler
+    # Run with the pixel painter
     cpu.run(program, debug=paint_pixel)
 
-    print("Image")
+    # Display the image
+    print("\nPart 2:")
     for row in range(6):
         start = row * 40
         print(''.join(pixels[start:start+40]))
