@@ -1,4 +1,4 @@
-# day 12 part 1
+# day 12
 
 import networkx as nx
 import itertools
@@ -42,7 +42,14 @@ def build_graph():
 
 def part1():
     g, source, target = build_graph()
-    return nx.dijkstra_path_length(g, source, target)
+    return nx.shortest_path_length(g, source, target)
+
+def part2():
+    g, source, target = build_graph()
+    for source, length in nx.single_target_shortest_path_length(g, target):
+        if g.nodes[source]['height'] == 0:
+            return length
 
 if __name__ == '__main__':
     print(f"Part 1: {part1()}")
+    print(f"Part 2: {part2()}")
