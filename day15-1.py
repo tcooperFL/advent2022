@@ -35,7 +35,6 @@ def part1():
                 if p not in occupied:
                     empty.add(p)
 
-    #pprint(empty)
     return len(empty)
 
 if __name__ == '__main__':
