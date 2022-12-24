@@ -26,14 +26,16 @@ def mdist(p1, p2):
 
 def create_span(x, dx):
     """Return the x span, inclusive"""
-    return (x - dx, x + dx)
+    p = (x - dx, x + dx)
+    print(f" x-span: {p}")
+    return p
 
 def find_spans(y, areas):
     # Create a list of intersected x-spans sorted by span start
     x_spans = []
     trimmed = set()
     for (p, dist) in areas:
-        # print(f"Considering sensor {p} with radius {dist}")
+        print(f"Considering sensor {p} with radius {dist}, y from {p.y-dist} to {p.y+dist}")
         # If sensor is above this line
         if p.y <= y:
             # If the range extends down to this line, compute covered x-span
@@ -70,7 +72,7 @@ def part2():
         # print(f"\nSearching row {y}")
         x = 0
         for x1, x2 in find_spans(y, areas):
-            # print(f"At {x,y} first x-span at {y} is {x1, x2}")
+            print(f"Testing {x,y} withspan at {x1, x2}")
             if (x < x1) and Point(x, y) not in occupied:
                 return Point(x, y)
             else:
