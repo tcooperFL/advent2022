@@ -1,9 +1,8 @@
-# day 15
+# day 15 part 1
 
 import re
 from collections import namedtuple
-from itertools import chain
-from pprint import pprint
+from codetiming import Timer
 
 INPUT = 'data/day15.txt'
 TARGET_ROW = 2000000
@@ -25,15 +24,16 @@ def part1():
     occupied = set([p for pair in data for p in pair])
     empty = set()
 
-    for s, b in data:
-        mdist = abs(s.y - b.y) + abs(s.x - b.x)
-        distance_to_line = abs(TARGET_ROW - s.y)
-        span = mdist - distance_to_line
-        if span >= 0:
-            for x in range(s.x - span, s.x + span + 1):
-                p = Point(x, TARGET_ROW)
-                if p not in occupied:
-                    empty.add(p)
+    with Timer(text="Search time: {:0.4f} seconds"):
+        for s, b in data:
+            mdist = abs(s.y - b.y) + abs(s.x - b.x)
+            distance_to_line = abs(TARGET_ROW - s.y)
+            span = mdist - distance_to_line
+            if span >= 0:
+                for x in range(s.x - span, s.x + span + 1):
+                    p = Point(x, TARGET_ROW)
+                    if p not in occupied:
+                        empty.add(p)
 
     return len(empty)
 
