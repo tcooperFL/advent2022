@@ -8,7 +8,7 @@ from pprint import pprint
 INPUT = 'data/day15.txt'
 TARGET_ROW = 2000000
 
-number_pattern = re.compile(r'\d+')
+number_pattern = re.compile(r'-?\d+')
 Point = namedtuple('Point', ['x', 'y'])
 
 def parse_locations(line):
