@@ -1,91 +1,82 @@
 # day 15 part 2
-# NOT SOLVED YET.
-# Works for sample data, but not for provided iput.
 
 import re
-from collections import namedtuple
-from pprint import pprint
+from itertools import product
 
 INPUT = 'data/day15.txt'    # sample.txt
-MAX_COORD = 4000000         # 20
+MAX_COORD = 4_000_000         # 20
 
-number_pattern = re.compile(r'\d+')
-Point = namedtuple('Point', ['x', 'y'])
+number_pattern = re.compile(r'-?\d+')
+
 
 def parse_locations(line):
+    """Return tuple: sensor location and mdistance to nearest beacon"""
     sx, sy, bx, by = list(map(int, number_pattern.findall(line)))
-    return Point(sx, sy), Point(bx, by)
+    return (sx, sy), mdist((sx, sy), (bx, by))
+
 
 def load_sensors():
     """Return a list of point pairs: (sensor_x, xsensor_y), (beacon_x, beacon_y)"""
     with open(INPUT, 'r') as f:
         return list(map(parse_locations, f.readlines()))
 
+
 def mdist(p1, p2):
-    return abs(p2.y - p1.y) + abs(p2.x - p1.x)
+    return abs(p2[0] - p1[0]) + abs(p2[1] - p1[1])
 
-def create_span(x, dx):
-    """Return the x span, inclusive"""
-    p = (x - dx, x + dx)
-    print(f" x-span: {p}")
-    return p
 
-def find_spans(y, areas):
-    # Create a list of intersected x-spans sorted by span start
-    x_spans = []
-    trimmed = set()
-    for (p, dist) in areas:
-        print(f"Considering sensor {p} with radius {dist}, y from {p.y-dist} to {p.y+dist}")
-        # If sensor is above this line
-        if p.y <= y:
-            # If the range extends down to this line, compute covered x-span
-            if p.y + dist >= y:
-                dx = (p.y + dist) - y
-                x_spans.append(create_span(p.x, dx))
-            else:
-                # Else plan to trim this area from subsequent line scans
-                trimmed.add((p, dist))
+def outlines(s, d):
+    dist = d + 1
+    sx, sy = s
 
-        # Else sensor is below.
-        elif p.y - dist <= y:
-            dx = y - (p.y - dist)
-            x_spans.append(create_span(p.x, dx))
-    
-    # Remove areas that can no longer cover below
-    for a in trimmed:
-        # print(f"Can trim out sensor {a} since no longer covers row {y} or below")
-        areas.remove(a)
+    top, bottom = (sx, sy-dist), (sx, sy+dist)
+    left, right = (sx-dist, sy), (sx+dist, sy)
 
-    # Return spans sorted by start of span.
-    return sorted(x_spans, key=lambda x: x[0])
+    return ((top, left), (right, bottom)), ((top, right), (left, bottom))
+
+
+def collect_lines(data):
+    left_lines = []
+    right_lines = []
+    for p, d in data:
+        left, right = outlines(p, d)
+        left_lines.extend(left)
+        right_lines.extend(right)
+    return left_lines, right_lines
+
+
+def line_intersection(line1, line2):
+    """From https://stackoverflow.com/questions/20677795/how-do-i-compute-the-intersection-point-of-two-lines"""
+    xdiff = (line1[0][0] - line1[1][0], line2[0][0] - line2[1][0])
+    ydiff = (line1[0][1] - line1[1][1], line2[0][1] - line2[1][1])
+
+    def det(a, b):
+        return a[0] * b[1] - a[1] * b[0]
+
+    div = det(xdiff, ydiff)
+    if div == 0:
+        raise Exception('lines do not intersect')
+
+    d = (det(*line1), det(*line2))
+    x = det(d, xdiff) // div
+    y = det(d, ydiff) // div
+    return x, y
+
 
 def part2():
-    data = sorted(load_sensors(), key=lambda x: x[0])
-    occupied = set([p for pair in data for p in pair])
-    areas = [(s, mdist(s, b)) for s, b in data]
+    data = load_sensors()
+    left_lines, right_lines = collect_lines(data)
 
-    # print(f"Areas: {len(areas)}")
-    # for p, d in sorted(areas, key=lambda x: x[0].x - x[1]):
-    #     print(f"Sensor {p,d} extends up to {(p.x - d,p.y - d)}")
+    for left, right in product(left_lines, right_lines):
+        x, y = line_intersection(left, right)
 
-    for y in range(MAX_COORD):
-        # print(f"\nSearching row {y}")
-        x = 0
-        for x1, x2 in find_spans(y, areas):
-            print(f"Testing {x,y} withspan at {x1, x2}")
-            if (x < x1) and Point(x, y) not in occupied:
-                return Point(x, y)
-            else:
-                x = max(x, x2 + 1)
-                # print(f"   x = {x}")
+        if not ((0 < x < MAX_COORD) and (0 < y < MAX_COORD)):
+            continue
 
-        if x < MAX_COORD and Point(x, y) not in occupied:
-            return Point(x, y)
+        if all(mdist((x, y), p) > d for p, d in data):
+            print(f"Found at {(x,y)}")
+            return x*4_000_000 + y
 
 
 if __name__ == '__main__':
-    p = part2()
-    print(f"Part 2: at {p} tuning frequency is {(p.x * 4000000) + p.y}")
-
-    # Point(x=1022932, y=57951), 4,091,728,057,951 is too low
-    # Point(x=1022933, y=57951), 4,091,736,057,951 is also "not right"
+    print(f"Part 2: {part2()}")
