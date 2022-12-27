@@ -1,0 +1,5 @@
+codetiming==1.4.0
+Cython==0.29.32
+networkx==2.8.8
+numpy==1.24.0
+pybind11==2.10.2
